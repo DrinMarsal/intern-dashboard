@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eff3ea;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      letter-spacing: 2px;
+      margin: 0;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    h2 {
+      color: #86a788;
+      margin-top: 20px;
+      font-size: 1.5em;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 8px;
+      font-size: 1em;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    label {
+      font-size: 1.1em;
+      color: #86a788;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    input {
+      color: #86a788; /* Ganti dengan warna yang kamu inginkan */
+    }
+
+    .header-container {
+      color: #ffffff;
+      background-color: #86a788;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 1em;
+      display: flex;
+      flex-direction: row;
+      margin: 2rem 0;
+    }
+
+    h1 {
+      flex-grow: 0.8; /* Makes h1 longer */
+      text-align: space-between; /* Centers title */
+      padding: 20px; /* Increases padding */
+    }
+
+    #backButton {
+      margin: 0;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #86a788;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #eff3ea;
+      color: #86a788;
+    }
+
+    hr {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+    }
+
+    select {
+      color: #86a788;
+    }
+
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .form-container select,
+    .form-container input,
+    .form-container textarea {
+      font-size: 1em;
+    }
+
+    .form-container textarea {
+      height: 220px;
+    }
+
+    .sidebar {
+      width: 200px;
+      background-color: #86a788;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #eff3ea;
+      color: #86a788;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div class="header-container">
+        <button id="backButton">Back</button>
+
+        <h1>Edit</h1>
+      </div>
+
+      <div class="form-container">
+        <label for="selectOption">Select Sheet Name</label>
+        <select id="selectOption">
+          <option value="">Select Sheet Name</option>
+          <option value="users">Users</option>
+          <option value="tasks">Tasks</option>
+          <option value="attendances">Attendances</option>
+          <option value="jobdesks">Job Desks</option>
+        </select>
+
+        <label for="actionOption">Select Action</label>
+        <select id="actionOption" disabled>
+          <option value="">Select an action</option>
+          <option value="add">Add Data</option>
+          <option value="addMany">Add Many Data</option>
+          <option value="update">Update Data</option>
+          <option value="updateMany">Update Many Data</option>
+          <option value="delete">Delete Data</option>
+          <option value="deleteMany">Delete Many Data</option>
+        </select>
+
+        <form id="formSheet" style="display: none">
+          <div id="formFields"></div>
+          <button type="submit">Submit</button>
+          <div id="responseMessage"></div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const formFieldsContainer = document.getElementById("formFields");
+      const selectOption = document.getElementById("selectOption");
+      const actionOption = document.getElementById("actionOption");
+      const formSheet = document.getElementById("formSheet");
+      const submitButton = document.querySelector("button[type='submit']");
+
+      document
+        .getElementById("backButton")
+        .addEventListener("click", function () {
+          // You can customize the back navigation as needed
+          window.history.back(); // Goes back to the previous page
+          // Alternatively, you could redirect to a specific page:
+          // window.location.href = '/previous-page.html';
+        });
+
+      var selectedOption = selectOption.value;
+
+      selectOption.addEventListener("change", function () {
+        const selectedSheet = selectOption.value;
+        if (selectedSheet) {
+          actionOption.disabled = false; // Enable action selection if sheetName is selected
+        } else {
+          actionOption.disabled = true; // Disable action if no sheetName is selected
+          formSheet.disabled = true; // Hide form if no sheetName is selected
+        }
+        formFieldsContainer.innerHTML = ""; // Clear previous fields
+      });
+
+      selectOption.addEventListener("change", function () {
+        var selectedOption = selectOption.value;
+        localStorage.setItem("sheetName", selectedOption);
+        formFieldsContainer.innerHTML = ""; // Clear previous fields
+
+        if (selectedOption === "users") {
+          formFieldsContainer.innerHTML = `
+          <div class="input-group">
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" placeholder="Enter Name">
+          </div>
+          <div class="input-group">
+              <label for="role">Role:</label>
+              <input type="text" id="role" name="role" placeholder="Enter Role">
+          </div>
+          <div class="input-group">
+              <label for="password">Password:</label>
+              <input type="password" id="password" name="password" placeholder="Enter Password">
+          </div>
+          <div class="input-group">
+              <label for="division">Division:</label>
+              <input type="text" id="division" name="division" placeholder="Enter Division">
+          </div>
+        `;
+        } else if (selectedOption === "tasks") {
+          formFieldsContainer.innerHTML = `
+          <div class="input-group">
+          <label for="taskName">Task:</label>
+          <input type="text" id="taskName" name="task" placeholder="Enter Task">
+          </div>
+          <div class="input-group">
+          <label for="taskFrom">From:</label>
+          <input type="text" id="taskFrom" name="from" placeholder="Enter From">
+          </div>
+          `;
+        } else if (selectedOption === "attendances") {
+          formFieldsContainer.innerHTML = `
+          <div class="input-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" name="user_id" placeholder="Enter User ID">
+          </div>
+          <div class="input-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" placeholder="Enter Date">
+          </div>
+          <div class="input-group">
+            <label for="status">Status:</label>
+            <input type="text" id="status" name="status" placeholder="Enter Status">
+          </div>
+        `;
+        } else if (selectedOption === "jobdesks") {
+          formFieldsContainer.innerHTML = `
+          <div class="input-group">
+            <label for="to">To:</label>
+            <input type="text" id="to" name="to" placeholder="Enter To">
+          </div>
+          <div class="input-group">
+            <label for="taskId">Task ID:</label>
+            <input type="text" id="taskId" name="task_id" placeholder="Enter Task ID">
+          </div>
+        `;
+        }
+      });
+
+      actionOption.addEventListener("change", function () {
+        const selectedAction = actionOption.value;
+        const selectedSheet = localStorage.getItem("sheetName");
+        formFieldsContainer.innerHTML = ""; // Clear previous fields
+        if (selectedAction) {
+          formSheet.style.display = "block"; // Show form when action is selected
+        } else {
+          formSheet.style.display = "block"; // Hide form if no action is selected
+        }
+
+        // Generate form fields based on sheetName and action selected
+        if (selectedSheet === "users") {
+          if (selectedAction === "add" || selectedAction === "update") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" placeholder="Enter Name">
+        </div>
+        <div class="input-group">
+          <label for="role">Role:</label>
+          <input type="text" id="role" name="role" placeholder="Enter Role">
+        </div>
+        <div class="input-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" placeholder="Enter Password">
+        </div>
+        <div class="input-group">
+          <label for="division">Division:</label>
+          <input type="text" id="division" name="division" placeholder="Enter Division">
+        </div>
+      `;
+          } else if (selectedAction === "delete") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" placeholder="Enter Name to Delete">
+        </div>
+      `;
+          } else if (
+            selectedAction === "addMany" ||
+            selectedAction === "updateMany" ||
+            selectedAction === "deleteMany"
+          ) {
+            formFieldsContainer.innerHTML = `
+        <textarea id="bulkData" name="bulkData" placeholder='Enter data in JSON format. (For delete, only the id field is required) Example: 
+[
+  {
+    "name": "John Doe",
+    "role": "Admin",
+    "password": "password123",
+  },
+  {
+    "name": "Jane Smith",
+    "role": "User",
+    "password": "password456",
+  }
+]'></textarea>
+  </div>
+`;
+          }
+        } else if (selectedSheet === "tasks") {
+          if (selectedAction === "add" || selectedAction === "update") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="taskName">Task:</label>
+          <input type="text" id="taskName" name="task" placeholder="Enter Task">
+        </div>
+        <div class="input-group">
+          <label for="taskFrom">From:</label>
+          <input type="text" id="taskFrom" name="from" placeholder="Enter From">
+        </div>
+      `;
+          } else if (selectedAction === "delete") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="taskName">Task Name:</label>
+          <input type="text" id="taskName" name="task" placeholder="Enter Task Name to Delete">
+        </div>
+      `;
+          } else if (
+            selectedAction === "addMany" ||
+            selectedAction === "updateMany" ||
+            selectedAction === "deleteMany"
+          ) {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="bulkData">Bulk Data (JSON format):</label>
+          <textarea id="bulkData" name="bulkData" placeholder='Enter data in JSON format. (For delete, only the id field is required) Example: 
+[
+  {
+    "name": "John Doe",
+    "role": "Admin",
+    "password": "password123",
+  },
+  {
+    "name": "Jane Smith",
+    "role": "User",
+    "password": "password456",
+  }
+]'></textarea>
+  </div>
+`;
+          }
+        } else if (selectedSheet === "attendances") {
+          if (selectedAction === "add" || selectedAction === "update") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="user_id">User ID:</label>
+          <input type="text" id="user_id" name="user_id">
+        </div>
+        <div class="input-group">
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date">
+        </div>
+        <div class="input-group">
+          <label for="status">Status:</label>
+          <input type="text" id="status" name="status" placeholder="Enter Status">
+        </div>
+      `;
+          } else if (selectedAction === "delete") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="userId">User ID:</label>
+          <input type="text" id="userId" name="user_id" placeholder="Enter User ID to Delete">
+        </div>
+        <div class="input-group">
+          <label for="date">Date:</label>
+          <input type="date" id="date" name="date">
+        </div>
+      `;
+          } else if (
+            selectedAction === "addMany" ||
+            selectedAction === "updateMany" ||
+            selectedAction === "deleteMany"
+          ) {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="bulkData">Bulk Data (JSON format):</label>
+          <textarea id="bulkData" name="bulkData" placeholder='Enter data in JSON format. (For delete, only the id field is required) Example: 
+[
+  {
+    "name": "John Doe",
+    "role": "Admin",
+    "password": "password123",
+  },
+  {
+    "name": "Jane Smith",
+    "role": "User",
+    "password": "password456",
+  }
+]'></textarea>
+  </div>
+`;
+          }
+        } else if (selectedSheet === "jobdesks") {
+          if (selectedAction === "add" || selectedAction === "update") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="to">To:</label>
+          <input type="text" id="to" name="to" placeholder="Enter To">
+        </div>
+        <div class="input-group">
+          <label for="taskId">Task ID:</label>
+          <input type="text" id="taskId" name="task_id" placeholder="Enter Task ID">
+        </div>
+      `;
+          } else if (selectedAction === "delete") {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="to">To:</label>
+          <input type="text" id="to" name="to" placeholder="Enter To to Delete">
+        </div>
+      `;
+          } else if (
+            selectedAction === "addMany" ||
+            selectedAction === "updateMany" ||
+            selectedAction === "deleteMany"
+          ) {
+            formFieldsContainer.innerHTML = `
+        <div class="input-group">
+          <label for="bulkData">Bulk Data (JSON format):</label>
+          <textarea id="bulkData" name="bulkData" placeholder='Enter data in JSON format. (For delete, only the id field is required) Example: 
+[
+  {
+    "name": "John Doe",
+    "role": "Admin",
+    "password": "password123",
+  },
+  {
+    "name": "Jane Smith",
+    "role": "User",
+    "password": "password456",
+  }
+]'></textarea>
+  </div>
+`;
+          }
+        }
+      });
+
+      $(document).ready(function () {
+        $("#formSheet").on("submit", function (e) {
+          e.preventDefault();
+
+          const sheetName = localStorage.getItem("sheetName") || "";
+          const action = $("#actionOption").val();
+          const formData = new FormData(document.getElementById("formSheet"));
+          const payload = {};
+
+          for (const [key, value] of formData.entries()) {
+            payload[key] = value;
+          }
+
+          // Prepare data payload for different actions
+          let requestData = {
+            sheetName: sheetName,
+            action: action,
+          };
+
+          if (action === "add" || action === "update") {
+            requestData.payload = payload;
+          } else if (action === "delete") {
+            requestData.payload = { id: payload.id }; // Assuming 'id' is the primary identifier
+          } else if (
+            action === "addMany" ||
+            action === "updateMany" ||
+            action === "deleteMany"
+          ) {
+            try {
+              // Expecting the bulk data in JSON format
+              requestData.payload = JSON.parse(payload.bulkData);
+            } catch (e) {
+              $("#responseMessage").html(
+                '<p style="color: red;">Invalid JSON format for bulk data.</p>'
+              );
+              return;
+            }
+          }
+
+          // Make AJAX request
+          $.ajax({
+            url: "/handleData",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            success: function (response) {
+              $("#responseMessage").html(
+                '<p style="color: green;">Action executed successfully!</p>'
+              );
+            },
+            error: function (error) {
+              $("#responseMessage").html(
+                '<p style="color: red;">Error executing action: ' +
+                  error.responseText +
+                  "</p>"
+              );
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
+<!--$(document).ready(function () {
+        $("#formSheet").on("submit", function (e) {
+          e.preventDefault(); // Mencegah form dari submit standar
+
+          var sheetName = localStorage.getItem("sheetName") || "";
+          var data = new FormData(document.getElementById("formSheet"));
+          var payload = {};
+          for (var [key, value] of data) {
+            payload[key] = value;
+          }
+
+          $.ajax({
+            url: "/addData",
+            method: "POST",
+            data: { sheetName, payload },
+            success: function (response) {
+              $("#responseMessage").html(
+                '<p style="color: green;">Data added successfully!</p>'
+              );
+            },
+            error: function (error) {
+              $("#responseMessage").html(
+                '<p style="color: red;">Error adding data: ' +
+                  error.responseText +
+                  "</p>"
+              );
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html> -->

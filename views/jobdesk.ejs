@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Intern Dashboard - Single Column</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #eff3ea;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        color: #ffffff;
+        background-color: #86a788;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: 2.5em;
+        letter-spacing: 2px;
+      }
+
+      .container {
+        width: 50%;
+        margin: 0 auto;
+      }
+
+      form {
+        background-color: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 8px;
+        font-size: 1em;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      button {
+        background-color: #86a788;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #eff3ea;
+        color: #86a788;
+      }
+
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+      }
+
+      textarea {
+        height: 220px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Jobdesk</h1>
+
+      <div class="form-container">
+        <label for="selectOption">Select Sheet Name</label>
+        <select id="selectOption">
+          <option value="">Select Sheet Name</option>
+          <option value="users">Users</option>
+          <option value="tasks">Tasks</option>
+          <option value="attendances">Attendances</option>
+          <option value="jobdesks">Job Desks</option>
+        </select>
+
+        <form id="formSheet" style="display: none">
+          <div id="formFields"></div>
+          <button type="submit">Submit</button>
+          <div id="responseMessage"></div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const formFieldsContainer = document.getElementById("formFields");
+      const selectOption = document.getElementById("selectOption");
+      const formSheet = document.getElementById("formSheet");
+
+      selectOption.addEventListener("change", function () {
+        const selectedSheet = selectOption.value;
+        formFieldsContainer.innerHTML = "";
+        formSheet.style.display = selectedSheet ? "block" : "none";
+
+        if (selectedSheet === "users") {
+          formFieldsContainer.innerHTML = `
+            <div class="input-group">
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" placeholder="Enter Name">
+            </div>
+            <div class="input-group">
+              <label for="role">Role:</label>
+              <input type="text" id="role" name="role" placeholder="Enter Role">
+            </div>
+          `;
+        } else if (selectedSheet === "tasks") {
+          formFieldsContainer.innerHTML = `
+            <div class="input-group">
+              <label for="taskName">Task:</label>
+              <input type="text" id="taskName" name="task" placeholder="Enter Task">
+            </div>
+          `;
+        }
+      });
+    </script>
+  </body>
+</html>
