@@ -1,181 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </head>
-  <style>
+<%- include("layout/header") %>
+<style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #eff3ea;
-      margin: 0;
-      padding: 0;
-    }
+        font-family: Arial, sans-serif;
+        background-color: #f2f2fb;
+        margin: 0;
+        padding: 0;
+      }
 
-    h1 {
-      text-align: center;
-      letter-spacing: 2px;
-      margin: 0;
-    }
+      h1 {
+        text-align: center;
+        color: #ffffff;
+        background-color: #1f5ea7;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: 2.5em;
+        letter-spacing: 2px;
+      }
 
-    .container {
-      width: 80%;
-      margin: 0 auto;
-    }
+      .container {
+        width: 50%;
+        margin: 0 auto;
+      }
 
-    h2 {
-      color: #86a788;
-      margin-top: 20px;
-      font-size: 1.5em;
-    }
+      form {
+        background-color: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
-    form {
-      background-color: #fff;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+      .input-group {
+        margin-bottom: 15px;
+      }
 
-    .input-group {
-      margin-bottom: 15px;
-    }
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
 
-    .input-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+      .input-group input {
+        width: 100%;
+        padding: 8px;
+        font-size: 1em;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
 
-    .input-group input {
-      width: 100%;
-      padding: 8px;
-      font-size: 1em;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
+      button {
+        background-color: #1f5ea7;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+      }
 
-    label {
-      font-size: 1.1em;
-      color: #86a788;
-      margin-bottom: 8px;
-      display: block;
-    }
+      button:hover {
+        background-color: #eff3ea;
+        color: #86a788;
+      }
 
-    input {
-      color: #86a788; /* Ganti dengan warna yang kamu inginkan */
-    }
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+        box-sizing: border-box;
+      }
 
-    .header-container {
-      color: #ffffff;
-      background-color: #86a788;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      font-size: 1em;
-      display: flex;
-      flex-direction: row;
-      margin: 2rem 0;
-    }
+      textarea {
+        height: 220px;
+      }
+</style>
+  <div class="sidebar">
+  <img
+    src="https://images.crunchbase.com/image/upload/c_pad,f_auto,q_auto:eco,dpr_1/141ea768d528e567c202"
+    alt="Profile Picture"
+    class="sidebar-img"
+  />
+  <a href="/home">Home</a>
+  <a href="/attendance">Attendance</a>
+  <a href="/jobdesk">Job Desk</a>
+  <a class="active" href="/edit">Edit</a>
+  <a href="/profile">Profile</a>
+  <a href="/announcement">announcement</a>
+</div>
 
-    h1 {
-      flex-grow: 0.8; /* Makes h1 longer */
-      text-align: space-between; /* Centers title */
-      padding: 20px; /* Increases padding */
-    }
-
-    #backButton {
-      margin: 0;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    textarea,
-    select {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 1em;
-      box-sizing: border-box;
-    }
-
-    button {
-      background-color: #86a788;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      font-size: 1em;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #eff3ea;
-      color: #86a788;
-    }
-
-    hr {
-      margin-top: 20px;
-      border: 1px solid #ddd;
-    }
-
-    select {
-      color: #86a788;
-    }
-
-    .form-container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .form-container select,
-    .form-container input,
-    .form-container textarea {
-      font-size: 1em;
-    }
-
-    .form-container textarea {
-      height: 220px;
-    }
-
-    .sidebar {
-      width: 200px;
-      background-color: #86a788;
-      height: 100vh;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .sidebar a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .sidebar a:hover {
-      background-color: #eff3ea;
-      color: #86a788;
-    }
-
-    .main-content {
-      flex-grow: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-  </style>
-  <body>
+  <div class="main-content">
     <div class="container">
       <div class="header-container">
-        <button id="backButton">Back</button>
-
         <h1>Edit</h1>
       </div>
 
@@ -207,22 +127,13 @@
         </form>
       </div>
     </div>
-
+  </div>  
     <script>
       const formFieldsContainer = document.getElementById("formFields");
       const selectOption = document.getElementById("selectOption");
       const actionOption = document.getElementById("actionOption");
       const formSheet = document.getElementById("formSheet");
       const submitButton = document.querySelector("button[type='submit']");
-
-      document
-        .getElementById("backButton")
-        .addEventListener("click", function () {
-          // You can customize the back navigation as needed
-          window.history.back(); // Goes back to the previous page
-          // Alternatively, you could redirect to a specific page:
-          // window.location.href = '/previous-page.html';
-        });
 
       var selectedOption = selectOption.value;
 
@@ -274,10 +185,6 @@
           `;
         } else if (selectedOption === "attendances") {
           formFieldsContainer.innerHTML = `
-          <div class="input-group">
-            <label for="userId">User ID:</label>
-            <input type="text" id="userId" name="user_id" placeholder="Enter User ID">
-          </div>
           <div class="input-group">
             <label for="date">Date:</label>
             <input type="date" id="date" name="date" placeholder="Enter Date">
@@ -562,38 +469,5 @@
         });
       });
     </script>
-  </body>
+    </div>
 </html>
-<!--$(document).ready(function () {
-        $("#formSheet").on("submit", function (e) {
-          e.preventDefault(); // Mencegah form dari submit standar
-
-          var sheetName = localStorage.getItem("sheetName") || "";
-          var data = new FormData(document.getElementById("formSheet"));
-          var payload = {};
-          for (var [key, value] of data) {
-            payload[key] = value;
-          }
-
-          $.ajax({
-            url: "/addData",
-            method: "POST",
-            data: { sheetName, payload },
-            success: function (response) {
-              $("#responseMessage").html(
-                '<p style="color: green;">Data added successfully!</p>'
-              );
-            },
-            error: function (error) {
-              $("#responseMessage").html(
-                '<p style="color: red;">Error adding data: ' +
-                  error.responseText +
-                  "</p>"
-              );
-            },
-          });
-        });
-      });
-    </script>
-  </body>
-</html> -->

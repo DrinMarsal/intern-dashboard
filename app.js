@@ -2,12 +2,14 @@ const CONFIG = require("./config.json");
 
 const express = require("express");
 const axios = require("axios");
+
 const bodyParser = require("body-parser");
+const path = require("path");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static("assets"));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 
@@ -16,6 +18,17 @@ const BASE_URL = CONFIG.BASE_URL;
 
 // Render halaman utama dengan form
 app.get("/", (req, res) => {
+  var signup = req.query.signup;
+  if (signup && signup == "success")
+    res.render("login", { signupSuccess: true });
+  else res.render("login");
+});
+
+app.get("/signup", (req, res) => {
+  res.render("signup");
+});
+
+app.get("/home", (req, res) => {
   res.render("index");
 });
 
@@ -29,6 +42,14 @@ app.get("/edit", (req, res) => {
 
 app.get("/attendance", (req, res) => {
   res.render("attendance");
+});
+
+app.get("/profile", (req, res) => {
+  res.render("profile");
+});
+
+app.get("/announcement", (req, res) => {
+  res.render("announcement");
 });
 
 // Handle all actions: add, update, delete, addMany, updateMany, deleteMany
@@ -65,6 +86,7 @@ app.post("/handleData", async (req, res) => {
       case "delete":
         route = "deleteData";
         data.id = payload.id; // ID dari data yang akan dihapus
+
         break;
       case "addMany":
         route = "addManyData";
@@ -97,6 +119,76 @@ app.post("/handleData", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  const { name, password } = req.body;
+
+  const config = {
+    method: "post",
+    url: `${BASE_URL}`,
+    data: {
+      route: "getData",
+      sheetName: "users",
+    },
+  };
+  const response = await axios(config);
+  var users = response.data.data;
+  if (response.data.success) {
+    var isLogin = false;
+    users.forEach((d) => {
+      if (d.name == name && d.password == password) {
+        isLogin = true;
+      }
+    });
+    return res.json({
+      isLogin,
+    });
+  } else {
+    console.log(error);
+    res.json({
+      msg: "error",
+    });
+  }
+});
+
+app.post("/signup", async (req, res) => {
+  const { name, email, password, confirmPassword } = req.body;
+
+  // Validasi simple: apakah password dan konfirmasi password cocok
+  if (password !== confirmPassword) {
+    return res
+      .status(400)
+      .json({ error: "Password and confirmation password do not match!" });
+  }
+
+  const config = {
+    method: "post",
+    url: `${BASE_URL}`,
+    data: {
+      route: "addData",
+      sheetName: "users",
+      data: {
+        name,
+        email,
+        password,
+      },
+    },
+  };
+
+  try {
+    const response = await axios(config);
+
+    if (response.data.success) {
+      // Redirect directly from the server
+      return res.json({
+        success: true,
+      });
+    } else {
+      return res.status(400).json({ error: "Signup failed" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: "Server error during signup" });
+  }
+});
 // Menjalankan server pada port yang tersedia atau 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

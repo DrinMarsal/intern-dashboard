@@ -1,0 +1,13 @@
+
+    <!-- Rest of the previous JavaScript remains the same -->
+    <script>
+      var menus = document.querySelectorAll(".sidebar a");
+      menus.forEach((a) => {
+        a.addEventListener("click", (e) => {
+          menus.forEach((d) => d.classList.remove("active"));
+          e.target.classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>

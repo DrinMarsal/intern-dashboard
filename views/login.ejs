@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-form h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: bold;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background-color: #1f5ea7;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn-login:hover {
+      background-color: rgba(102, 187, 235, 0.3);
+      color: black;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .signup-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .alert-success {
+      color: green;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    .logooo {
+      position: fixed;
+      top: 2rem;
+      left: 4rem;
+      width: 200px;
+    }
+  </style>
+  <body>
+    <img
+      class="logooo"
+      src="https://images.crunchbase.com/image/upload/c_pad,f_auto,q_auto:eco,dpr_1/141ea768d528e567c202"
+      alt=""
+    />
+    <div class="login-container">
+      <div class="login-form">
+        <h2>Login</h2>
+        <% if (locals.signupSuccess) { %>
+        <div class="alert alert-success">
+          Signup successful! Please login with your new account.
+        </div>
+        <% } %>
+        <br />
+        <div id="responseMessage"></div>
+        <form id="login_form">
+          <div class="input-group">
+            <label for="name">Username:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter your username"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-login">Login</button>
+        </form>
+        <p class="signup-link">
+          Don't have an account? <a href="/signup">Sign up</a>
+        </p>
+      </div>
+    </div>
+    <script>
+      var login_form = document.getElementById("login_form");
+
+      login_form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData(login_form);
+
+        // Convert FormData to an object
+        var formObject = {};
+        formData.forEach(function (value, key) {
+          formObject[key] = value;
+        });
+
+        // Make Fetch request
+        fetch("/login", {
+          method: "POST",
+          body: new URLSearchParams(formObject), // Send form data
+        })
+          .then((response) => response.json()) // Assuming the server returns JSON
+          .then((data) => {
+            if (data.isLogin) {
+              localStorage.setItem("authToken", data.token);
+              document.getElementById("responseMessage").innerHTML =
+                '<p style="color: green;">Login Success!</p>';
+              location.assign("/home");
+            } else
+              document.getElementById("responseMessage").innerHTML =
+                '<p style="color: red;">Login gagal!</p>';
+          })
+          .catch((error) => {
+            document.getElementById("responseMessage").innerHTML =
+              '<p style="color: red;">Error executing action: ' +
+              error.message +
+              "</p>";
+          });
+      });
+    </script>
+  </body>
+</html>

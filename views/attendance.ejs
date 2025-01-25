@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Intern Dashboard - Single Column</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-      body {
+<%- include("layout/header") %>
+<style>
+  body {
         font-family: Arial, sans-serif;
-        background-color: #eff3ea;
+        background-color: #f2f2fb;
         margin: 0;
         padding: 0;
       }
@@ -16,7 +10,7 @@
       h1 {
         text-align: center;
         color: #ffffff;
-        background-color: #86a788;
+        background-color: #1f5ea7;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -56,7 +50,7 @@
       }
 
       button {
-        background-color: #86a788;
+        background-color: #1f5ea7;
         color: white;
         padding: 10px 20px;
         border: none;
@@ -84,60 +78,85 @@
       textarea {
         height: 220px;
       }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Attendance</h1>
+</style>
+<div class="sidebar">
+  <img
+    src="https://images.crunchbase.com/image/upload/c_pad,f_auto,q_auto:eco,dpr_1/141ea768d528e567c202"
+    alt="Profile Picture"
+    class="sidebar-img"
+  />
+  <a href="/home">Home</a>
+  <a class="active" href="/attendance">Attendance</a>
+  <a href="/jobdesk">Job Desk</a>
+  <a href="/edit">Edit</a>
+  <a href="/profile">Profile</a>
+  <a href="/announcement">announcement</a>
+</div>
 
-      <div class="form-container">
-        <label for="selectOption">Select Sheet Name</label>
-        <select id="selectOption">
-          <option value="">Select Sheet Name</option>
-          <option value="users">Users</option>
-          <option value="tasks">Tasks</option>
-          <option value="attendances">Attendances</option>
-          <option value="jobdesks">Job Desks</option>
-        </select>
+<div class="main-content">
+  <div class="container">
+    <h1>Intern Dashboard</h1>
 
-        <form id="formSheet" style="display: none">
-          <div id="formFields"></div>
-          <button type="submit">Submit</button>
-          <div id="responseMessage"></div>
-        </form>
-      </div>
+    <div class="form-container">
+      <label for="selectOption">Select Sheet Name</label>
+      <select id="selectOption">
+        <option value="">Select Sheet Name</option>
+        <option value="users">Users</option>
+        <option value="tasks">Tasks</option>
+        <option value="attendances">Attendances</option>
+        <option value="jobdesks">Job Desks</option>
+      </select>
+
+      <label for="actionOption">Select Action</label>
+      <select id="actionOption">
+        <option value="">Select an action</option>
+        <option value="add">Add Data</option>
+        <option value="addMany">Add Many Data</option>
+        <option value="update">Update Data</option>
+        <option value="updateMany">Update Many Data</option>
+        <option value="delete">Delete Data</option>
+        <option value="deleteMany">Delete Many Data</option>
+      </select>
+
+      <form id="formSheet" style="display: none">
+        <div id="formFields"></div>
+        <button type="submit">Submit</button>
+        <div id="responseMessage"></div>
+      </form>
     </div>
+  </div>
+</div>
 
-    <script>
-      const formFieldsContainer = document.getElementById("formFields");
-      const selectOption = document.getElementById("selectOption");
-      const formSheet = document.getElementById("formSheet");
-
-      selectOption.addEventListener("change", function () {
-        const selectedSheet = selectOption.value;
-        formFieldsContainer.innerHTML = "";
-        formSheet.style.display = selectedSheet ? "block" : "none";
-
-        if (selectedSheet === "users") {
-          formFieldsContainer.innerHTML = `
-            <div class="input-group">
-              <label for="name">Name:</label>
-              <input type="text" id="name" name="name" placeholder="Enter Name">
-            </div>
-            <div class="input-group">
-              <label for="role">Role:</label>
-              <input type="text" id="role" name="role" placeholder="Enter Role">
-            </div>
+<script>
+  const formFieldsContainer = document.getElementById("formFields");
+  const selectOption = document.getElementById("selectOption");
+  const formSheet = document.getElementById("formSheet");
+  
+  selectOption.addEventListener("change", function () {
+    const selectedSheet = selectOption.value;
+    formFieldsContainer.innerHTML = "";
+    formSheet.style.display = selectedSheet ? "block" : "none";
+    
+    if (selectedSheet === "users") {
+      formFieldsContainer.innerHTML = `
+      <div class="input-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter Name">
+        </div>
+        <div class="input-group">
+          <label for="role">Role:</label>
+          <input type="text" id="role" name="role" placeholder="Enter Role">
+          </div>
           `;
         } else if (selectedSheet === "tasks") {
           formFieldsContainer.innerHTML = `
-            <div class="input-group">
-              <label for="taskName">Task:</label>
-              <input type="text" id="taskName" name="task" placeholder="Enter Task">
+          <div class="input-group">
+            <label for="taskName">Task:</label>
+            <input type="text" id="taskName" name="task" placeholder="Enter Task">
             </div>
-          `;
-        }
-      });
-    </script>
-  </body>
+            `;
+          }
+        });
+  </script>
+</body>
 </html>
