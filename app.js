@@ -1,3 +1,5 @@
+const CONFIG = require("./config.json");
+
 const express = require("express");
 const axios = require("axios");
 const bodyParser = require("body-parser");
@@ -9,10 +11,8 @@ app.use(express.static("assets"));
 
 app.set("view engine", "ejs");
 
-
 // Ganti dengan URL yang benar untuk Google Apps Script
-const BASE_URL =
-  "https://script.google.com/macros/s/AKfycbz6aiNxB1xDIpXLuvW3xmrlewxD15gHlRaphfr6rIpUCnGzluTj3qq0kw5a8trS38t_/exec";
+const BASE_URL = CONFIG.BASE_URL;
 
 // Render halaman utama dengan form
 app.get("/", (req, res) => {
@@ -30,8 +30,6 @@ app.get("/edit", (req, res) => {
 app.get("/attendance", (req, res) => {
   res.render("attendance");
 });
-
-
 
 // Handle all actions: add, update, delete, addMany, updateMany, deleteMany
 app.post("/handleData", async (req, res) => {
