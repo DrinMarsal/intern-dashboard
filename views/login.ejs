@@ -142,18 +142,16 @@
         e.preventDefault();
         var formData = new FormData(login_form);
 
-        // Convert FormData to an object
         var formObject = {};
         formData.forEach(function (value, key) {
           formObject[key] = value;
         });
 
-        // Make Fetch request
         fetch("/login", {
           method: "POST",
-          body: new URLSearchParams(formObject), // Send form data
+          body: new URLSearchParams(formObject), 
         })
-          .then((response) => response.json()) // Assuming the server returns JSON
+          .then((response) => response.json()) 
           .then((data) => {
             if (data.isLogin) {
               localStorage.setItem("authToken", data.token);

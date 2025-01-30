@@ -13,10 +13,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 
-// Ganti dengan URL yang benar untuk Google Apps Script
 const BASE_URL = CONFIG.BASE_URL;
 
-// Render halaman utama dengan form
 app.get("/", (req, res) => {
   var signup = req.query.signup;
   if (signup && signup == "success")
@@ -52,7 +50,6 @@ app.get("/announcement", (req, res) => {
   res.render("announcement");
 });
 
-// Handle all actions: add, update, delete, addMany, updateMany, deleteMany
 app.post("/handleData", async (req, res) => {
   try {
     const { sheetName, action, payload } = req.body;
@@ -66,46 +63,44 @@ app.post("/handleData", async (req, res) => {
     const requestData = {
       sheetName: sheetName,
       action: action,
-      payload: payload.bulkData ? JSON.parse(payload.bulkData) : [], // Memastikan ini dalam format array JSON
+      payload: payload.bulkData ? JSON.parse(payload.bulkData) : [], 
     };
 
     let route;
     let data = { sheetName: sheetName };
 
-    // Tentukan route berdasarkan aksi
     switch (action) {
       case "add":
         route = "addData";
-        data.data = payload; // Data yang akan ditambahkan
+        data.data = payload; 
         break;
       case "update":
         route = "updateData";
-        data.id = payload.id; // ID dari data yang akan diupdate
-        data.data = payload; // Data baru yang akan menggantikan yang lama
+        data.id = payload.id; 
+        data.data = payload; 
         break;
       case "delete":
         route = "deleteData";
-        data.id = payload.id; // ID dari data yang akan dihapus
+        data.id = payload.id; 
 
         break;
       case "addMany":
         route = "addManyData";
-        data.datas = payload; // Data massal dalam bentuk array
+        data.datas = payload; 
         break;
       case "updateMany":
         route = "updateManyData";
-        data.ids = payload.map((p) => p.id); // Ambil ID dari setiap data
-        data.datas = payload; // Data baru untuk diupdate
+        data.ids = payload.map((p) => p.id); 
+        data.datas = payload; 
         break;
       case "deleteMany":
         route = "deleteManyData";
-        data.ids = payload.map((p) => p.id); // Ambil ID dari data yang akan dihapus
+        data.ids = payload.map((p) => p.id); 
         break;
       default:
         return res.status(400).send("Invalid action");
     }
 
-    // Siapkan konfigurasi untuk permintaan ke Google Apps Script
     const config = {
       method: "post",
       url: `${BASE_URL}`,
@@ -153,7 +148,7 @@ app.post("/login", async (req, res) => {
 app.post("/signup", async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
 
-  // Validasi simple: apakah password dan konfirmasi password cocok
+  
   if (password !== confirmPassword) {
     return res
       .status(400)
@@ -178,7 +173,7 @@ app.post("/signup", async (req, res) => {
     const response = await axios(config);
 
     if (response.data.success) {
-      // Redirect directly from the server
+      
       return res.json({
         success: true,
       });
@@ -189,7 +184,7 @@ app.post("/signup", async (req, res) => {
     return res.status(500).json({ error: "Server error during signup" });
   }
 });
-// Menjalankan server pada port yang tersedia atau 3000
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

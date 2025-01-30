@@ -140,18 +140,18 @@
       selectOption.addEventListener("change", function () {
         const selectedSheet = selectOption.value;
         if (selectedSheet) {
-          actionOption.disabled = false; // Enable action selection if sheetName is selected
+          actionOption.disabled = false; 
         } else {
-          actionOption.disabled = true; // Disable action if no sheetName is selected
-          formSheet.disabled = true; // Hide form if no sheetName is selected
+          actionOption.disabled = true; 
+          formSheet.disabled = true; 
         }
-        formFieldsContainer.innerHTML = ""; // Clear previous fields
+        formFieldsContainer.innerHTML = ""; 
       });
 
       selectOption.addEventListener("change", function () {
         var selectedOption = selectOption.value;
         localStorage.setItem("sheetName", selectedOption);
-        formFieldsContainer.innerHTML = ""; // Clear previous fields
+        formFieldsContainer.innerHTML = ""; 
 
         if (selectedOption === "users") {
           formFieldsContainer.innerHTML = `
@@ -211,14 +211,13 @@
       actionOption.addEventListener("change", function () {
         const selectedAction = actionOption.value;
         const selectedSheet = localStorage.getItem("sheetName");
-        formFieldsContainer.innerHTML = ""; // Clear previous fields
+        formFieldsContainer.innerHTML = ""; 
         if (selectedAction) {
-          formSheet.style.display = "block"; // Show form when action is selected
+          formSheet.style.display = "block"; 
         } else {
-          formSheet.style.display = "block"; // Hide form if no action is selected
+          formSheet.style.display = "block"; 
         }
 
-        // Generate form fields based on sheetName and action selected
         if (selectedSheet === "users") {
           if (selectedAction === "add" || selectedAction === "update") {
             formFieldsContainer.innerHTML = `
